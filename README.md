@@ -48,7 +48,11 @@ os-installer plan --firmware uefi --size-gb 476
 os-installer --help
 ```
 
-`env` says whether it is running in Windows or WinPE and how the PC booted (UEFI or BIOS). `plan` shows the partitions it would create on a drive of that size, without touching anything.
+`env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS). `plan` shows the partitions it would create on a drive of that size, without touching anything.
+
+## Run as administrator
+
+Partitioning a drive needs administrator rights. When the app is not running as administrator, the shield button at the top right restarts it through the Windows UAC prompt; answering No leaves it running as it was. The button is hidden once it is elevated, and in WinPE, which always runs as administrator.
 
 ## Light and dark
 
