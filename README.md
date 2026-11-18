@@ -28,9 +28,11 @@ USB drives are listed and prepared like internal ones, and the list updates by i
 
 ## Applying Windows from an ISO
 
-Step 2 takes a Windows ISO as it is: OS Installer mounts it (read-only, only while the app is open), finds `sources\install.wim` or `install.esd` inside, and lists the editions to choose from. It only offers empty partitions to apply to, so it never mixes Windows into a drive with files on it. You can also browse to the image, type its path, or drop the ISO, image or a copied ISO folder onto the window.
+Step 2 takes a Windows ISO as it is (reading its editions doesn't need administrator rights): OS Installer mounts it (read-only, only while the app is open), finds `sources\install.wim` or `install.esd` inside, and lists the editions to choose from. It only offers empty partitions to apply to, so it never mixes Windows into a drive with files on it. You can also browse to the image, type its path, or drop the ISO, image or a copied ISO folder onto the window.
 
 ![applying Windows from an ISO](docs/apply.png)
+
+Media with more than one architecture, such as a Media Creation Tool ISO or USB stick for both x86 and x64, get an **x86 / x64 / ARM64** choice: the PC's own architecture is chosen to start with, and the ones the image doesn't have are greyed out. `apply-image --arch` does the same on the command line.
 
 ## Injecting drivers
 
