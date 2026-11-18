@@ -56,11 +56,13 @@ Partitioning a drive needs administrator rights. When the app is not running as 
 
 ## Light and dark
 
-The window follows Windows' light or dark app mode, and switches when you change it. The button in the header switches by hand.
+By default the window follows Windows' light or dark app mode, and switches when you change it. To keep it light or dark, open **Settings** with the cog button at the top right (or press F9) and choose a theme. The choice is remembered.
 
 ![dark mode screenshot](docs/screenshot-dark.png)
 
-In WinPE:
+![Settings](docs/settings.png)
+
+In WinPE, with Settings open:
 
 ![running in WinPE](docs/winpe.png)
 
@@ -74,4 +76,4 @@ Found a bug or have an idea? [Open an issue](https://github.com/WelFedTed/os-ins
 
 ---
 
-OS Installer is free to download and use. It is not open source; the source code is not published. It is built with [Slint](https://slint.dev). Copyright © 2026 WelFedTed. All rights reserved.
+OS Installer is free to download and use. It is not open source; the source code is not published. It is built with [Slint](https://slint.dev), and carries the Cascadia Mono font (SIL Open Font License). Copyright © 2026 WelFedTed. All rights reserved.
