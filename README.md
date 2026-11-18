@@ -1,4 +1,4 @@
-# OS Installer
+# <img src="docs/icon.png" width="40" align="top" alt=""> OS Installer
 
 A small Windows tool that installs Windows onto a drive the way deployment technicians do it by hand: partition, apply the image, make it bootable, add drivers.
 
