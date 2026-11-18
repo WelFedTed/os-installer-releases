@@ -1,9 +1,9 @@
 # OS Installer
 
-A small Windows tool that gets a drive ready for Windows to be imaged onto by hand, then makes it bootable.
+A small Windows tool that installs Windows onto a drive the way deployment technicians do it by hand: partition, apply the image, make it bootable, add drivers.
 
 1. **Prepare the drive.** Pick a disk and how the PC will boot: UEFI (GPT) or BIOS / Legacy (MBR). OS Installer erases the disk and creates Microsoft's recommended partitions, with temporary drive letters.
-2. **Apply Windows yourself** to `W:\` with DISM or WinNTSetup.
+2. **Apply Windows.** Choose a Windows **ISO** (or its `install.wim` / `install.esd`) and an edition; OS Installer applies it to `W:\` with DISM. You can drop the ISO on the window. (WinNTSetup or your own DISM command work too.)
 3. **Make it bootable.** OS Installer copies the boot files from the new Windows to the system partition with that Windows' own `bcdboot`, and sets up the recovery partition.
 4. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot.
 
@@ -24,6 +24,12 @@ It will not prepare the drive Windows is running from, the drive OS Installer it
 ## USB drives
 
 USB drives are listed and prepared like internal ones, and the list updates by itself when you plug a drive in or take it out. USB SSDs and hard drives behave like internal disks. Some USB flash drives (the ones that report removable media) may refuse the GPT partition table that UEFI needs; if so, OS Installer says so. USB support is new and hasn't been tested on many devices yet, so please report what works and what doesn't.
+
+## Applying Windows from an ISO
+
+Step 2 takes a Windows ISO as it is: OS Installer mounts it (read-only, only while the app is open), finds `sources\install.wim` or `install.esd` inside, and lists the editions to choose from. It only offers empty partitions to apply to, so it never mixes Windows into a drive with files on it. You can also browse to the image, type its path, or drop the ISO, image or a copied ISO folder onto the window.
+
+![applying Windows from an ISO](docs/apply.png)
 
 ## Injecting drivers
 
@@ -64,6 +70,8 @@ os-installer list-disks
 os-installer prepare --disk 1 --firmware uefi
 os-installer prepare --disk 1 --firmware uefi --yes
 os-installer list-windows
+os-installer list-editions --image D:\Win11.iso
+os-installer apply-image --image D:\Win11.iso --index 6 --windows W:\
 os-installer make-bootable --windows W:\
 os-installer inject-drivers --windows W:\ --drivers D:\Drivers
 os-installer env
@@ -72,6 +80,7 @@ os-installer --help
 
 - `list-disks` lists the drives with their partitions, letters and labels, and says which can't be prepared and why. Add `--json` for JSON.
 - `prepare` shows what is on the drive and the layout it will get, and changes nothing (exit code 2). Only with `--yes` does it erase the drive and create the partitions; that needs an administrator command prompt (WinPE's always is). The disk numbers are the same as diskpart's.
+- `list-editions` shows the editions in an ISO, `install.wim` or `install.esd`; `apply-image` applies one (by its index) to an empty partition and shows the percentage. Needs an administrator command prompt.
 - `make-bootable` copies that Windows' boot files to its drive's system partition with its own `bcdboot` (UEFI for a GPT drive, BIOS for an MBR one) and sets up the recovery partition with its `Winre.wim` and `reagentc`. It works after a restart too, when the partitions have lost their letters. Needs an administrator command prompt.
 - `list-windows` lists the Windows installations on other drives; `inject-drivers` adds every `.inf` in the folder and its subfolders to one of them (`--force-unsigned` adds unsigned drivers too). Needs an administrator command prompt.
 - `env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS).
