@@ -5,18 +5,29 @@ A small Windows tool that gets a drive ready for Windows to be imaged onto by ha
 1. **Prepare the drive.** Pick a disk and how the PC will boot: UEFI (GPT) or BIOS / Legacy (MBR). OS Installer erases the disk and creates Microsoft's recommended partitions, with temporary drive letters.
 2. **Apply Windows yourself** to `W:\` with DISM or WinNTSetup.
 3. **Make it bootable.** OS Installer copies the boot files from the new Windows to the system partition with that Windows' own `bcdboot`, and sets up the recovery partition.
+4. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot.
 
 It is one small exe with a window and a command line, and it runs in full Windows and in **WinPE**, including a plain WinPE with no optional components added.
 
 ![screenshot](docs/screenshot.png)
 
-> **Preview, and it erases disks.** Listing drives and preparing them (step 1) work, in Windows and WinPE. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first. Making the drive bootable (step 3) comes in the next release.
+> **Preview, and it erases disks.** Listing drives, preparing them (step 1) and injecting drivers (step 4) work, in Windows and WinPE. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first. Making the drive bootable (step 3) comes in a later release.
 
 Before anything is erased, OS Installer shows what is on the drive and what it will get, and asks:
 
 ![confirming before a drive is erased](docs/prepare.png)
 
-It will not prepare the drive Windows is running from, the drive OS Installer itself is on, write-protected drives or Storage Spaces drives. Preparing needs administrator rights.
+It will not prepare the drive Windows is running from, the drive OS Installer itself is on, write-protected drives, Storage Spaces drives or, in WinPE, the drive with WinPE or Windows Setup on it (usually the USB stick you started from). Preparing needs administrator rights.
+
+![the four steps, with Inject drivers](docs/drivers.png)
+
+## USB drives
+
+USB drives are listed and prepared like internal ones, and the list updates by itself when you plug a drive in or take it out. USB SSDs and hard drives behave like internal disks. Some USB flash drives (the ones that report removable media) may refuse the GPT partition table that UEFI needs; if so, OS Installer says so. USB support is new and hasn't been tested on many devices yet, so please report what works and what doesn't.
+
+## Injecting drivers
+
+After applying Windows, step 4 (or `inject-drivers` on the command line) adds the drivers in a folder, such as the storage and network drivers for a new PC, to that Windows. It uses DISM, which WinPE and Windows include. Choose the Windows it found on the other drives, type or browse to the folder (subfolders are included), and optionally allow unsigned drivers.
 
 ## Download
 
@@ -52,12 +63,15 @@ The same exe works from a command prompt, which suits scripts and WinPE:
 os-installer list-disks
 os-installer prepare --disk 1 --firmware uefi
 os-installer prepare --disk 1 --firmware uefi --yes
+os-installer list-windows
+os-installer inject-drivers --windows W:\ --drivers D:\Drivers
 os-installer env
 os-installer --help
 ```
 
 - `list-disks` lists the drives with their partitions, letters and labels, and says which can't be prepared and why. Add `--json` for JSON.
 - `prepare` shows what is on the drive and the layout it will get, and changes nothing (exit code 2). Only with `--yes` does it erase the drive and create the partitions; that needs an administrator command prompt (WinPE's always is). The disk numbers are the same as diskpart's.
+- `list-windows` lists the Windows installations on other drives; `inject-drivers` adds every `.inf` in the folder and its subfolders to one of them (`--force-unsigned` adds unsigned drivers too). Needs an administrator command prompt.
 - `env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS).
 - `plan --firmware uefi --size-gb 476` shows the partitions for a drive of that size, without touching anything.
 
