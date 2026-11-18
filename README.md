@@ -10,7 +10,13 @@ It is one small exe with a window and a command line, and it runs in full Window
 
 ![screenshot](docs/screenshot.png)
 
-> **Preview.** The current release lets you try the window and the command line, in Windows and WinPE. It does **not** change any disk yet: the drives shown are examples. Partitioning and making drives bootable come in the next releases.
+> **Preview, and it erases disks.** Listing drives and preparing them (step 1) work, in Windows and WinPE. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first. Making the drive bootable (step 3) comes in the next release.
+
+Before anything is erased, OS Installer shows what is on the drive and what it will get, and asks:
+
+![confirming before a drive is erased](docs/prepare.png)
+
+It will not prepare the drive Windows is running from, the drive OS Installer itself is on, write-protected drives or Storage Spaces drives. Preparing needs administrator rights.
 
 ## Download
 
@@ -36,19 +42,24 @@ Following Microsoft's guidance for [UEFI/GPT](https://learn.microsoft.com/window
 | Windows `W:` | rest of the drive, up to 2 TB | NTFS |
 | Recovery `R:` | 1 GB | NTFS (hidden) |
 
-The drive letters are only for the imaging step; Windows assigns its own on first boot.
+The drive letters are only for the imaging step; Windows assigns its own on first boot. If S:, W: or R: is already taken, OS Installer uses the next free letters from Z: down, and shows which.
 
 ## Command line
 
 The same exe works from a command prompt, which suits scripts and WinPE:
 
 ```bat
+os-installer list-disks
+os-installer prepare --disk 1 --firmware uefi
+os-installer prepare --disk 1 --firmware uefi --yes
 os-installer env
-os-installer plan --firmware uefi --size-gb 476
 os-installer --help
 ```
 
-`env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS). `plan` shows the partitions it would create on a drive of that size, without touching anything.
+- `list-disks` lists the drives with their partitions, letters and labels, and says which can't be prepared and why. Add `--json` for JSON.
+- `prepare` shows what is on the drive and the layout it will get, and changes nothing (exit code 2). Only with `--yes` does it erase the drive and create the partitions; that needs an administrator command prompt (WinPE's always is). The disk numbers are the same as diskpart's.
+- `env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS).
+- `plan --firmware uefi --size-gb 476` shows the partitions for a drive of that size, without touching anything.
 
 ## Run as administrator
 
@@ -62,9 +73,7 @@ By default the window follows Windows' light or dark app mode, and switches when
 
 ![Settings](docs/settings.png)
 
-In WinPE, with Settings open:
-
-![running in WinPE](docs/winpe.png)
+The screenshots are from WinPE, in a virtual machine with two virtual disks.
 
 ## Privacy
 
