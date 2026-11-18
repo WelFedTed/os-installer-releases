@@ -11,7 +11,7 @@ It is one small exe with a window and a command line, and it runs in full Window
 
 ![screenshot](docs/screenshot.png)
 
-> **Preview, and it erases disks.** Listing drives, preparing them (step 1) and injecting drivers (step 4) work, in Windows and WinPE. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first. Making the drive bootable (step 3) comes in a later release.
+> **Preview, and it erases disks.** All four steps work, in Windows and WinPE, and drives it prepared and made bootable start with UEFI and with BIOS in testing. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first, and please report how it goes on real PCs.
 
 Before anything is erased, OS Installer shows what is on the drive and what it will get, and asks:
 
@@ -64,6 +64,7 @@ os-installer list-disks
 os-installer prepare --disk 1 --firmware uefi
 os-installer prepare --disk 1 --firmware uefi --yes
 os-installer list-windows
+os-installer make-bootable --windows W:\
 os-installer inject-drivers --windows W:\ --drivers D:\Drivers
 os-installer env
 os-installer --help
@@ -71,6 +72,7 @@ os-installer --help
 
 - `list-disks` lists the drives with their partitions, letters and labels, and says which can't be prepared and why. Add `--json` for JSON.
 - `prepare` shows what is on the drive and the layout it will get, and changes nothing (exit code 2). Only with `--yes` does it erase the drive and create the partitions; that needs an administrator command prompt (WinPE's always is). The disk numbers are the same as diskpart's.
+- `make-bootable` copies that Windows' boot files to its drive's system partition with its own `bcdboot` (UEFI for a GPT drive, BIOS for an MBR one) and sets up the recovery partition with its `Winre.wim` and `reagentc`. It works after a restart too, when the partitions have lost their letters. Needs an administrator command prompt.
 - `list-windows` lists the Windows installations on other drives; `inject-drivers` adds every `.inf` in the folder and its subfolders to one of them (`--force-unsigned` adds unsigned drivers too). Needs an administrator command prompt.
 - `env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS).
 - `plan --firmware uefi --size-gb 476` shows the partitions for a drive of that size, without touching anything.
