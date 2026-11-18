@@ -4,7 +4,7 @@ A small Windows tool that installs Windows onto a drive the way deployment techn
 
 1. **Prepare the drive.** Pick a disk and how the PC will boot: UEFI (GPT) or BIOS / Legacy (MBR). OS Installer erases the disk and creates Microsoft's recommended partitions, with temporary drive letters.
 2. **Apply Windows.** Choose a Windows **ISO** (or its `install.wim` / `install.esd`) and an edition; OS Installer applies it to `W:\` with DISM. You can drop the ISO on the window. (WinNTSetup or your own DISM command work too.)
-3. **Make it bootable.** OS Installer copies the boot files from the new Windows to the system partition with that Windows' own `bcdboot`, and sets up the recovery partition.
+3. **Make it bootable.** OS Installer copies the new Windows' boot files to the system partition with `bcdboot`, and sets up the recovery partition. The drive is meant for another PC, so it never adds a boot entry to the firmware of the PC it runs on.
 4. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot.
 
 It is one small exe with a window and a command line, and it runs in full Windows and in **WinPE**, including a plain WinPE with no optional components added.
@@ -81,8 +81,9 @@ os-installer --help
 - `list-disks` lists the drives with their partitions, letters and labels, and says which can't be prepared and why. Add `--json` for JSON.
 - `prepare` shows what is on the drive and the layout it will get, and changes nothing (exit code 2). Only with `--yes` does it erase the drive and create the partitions; that needs an administrator command prompt (WinPE's always is). The disk numbers are the same as diskpart's.
 - `list-editions` shows the editions in an ISO, `install.wim` or `install.esd`; `apply-image` applies one (by its index) to an empty partition and shows the percentage. Needs an administrator command prompt.
-- `make-bootable` copies that Windows' boot files to its drive's system partition with its own `bcdboot` (UEFI for a GPT drive, BIOS for an MBR one) and sets up the recovery partition with its `Winre.wim` and `reagentc`. It works after a restart too, when the partitions have lost their letters. Needs an administrator command prompt.
+- `make-bootable` copies that Windows' boot files to its drive's system partition with `bcdboot` (UEFI for a GPT drive, BIOS for an MBR one) and sets up the recovery partition with its `Winre.wim` and `reagentc`. It leaves the boot menu of the PC it runs on alone. It works after a restart too, when the partitions have lost their letters. Needs an administrator command prompt.
 - `list-windows` lists the Windows installations on other drives; `inject-drivers` adds every `.inf` in the folder and its subfolders to one of them (`--force-unsigned` adds unsigned drivers too). Needs an administrator command prompt.
+- `check-update` says whether a newer version is out; `update` downloads it and replaces the exe.
 - `env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS).
 - `plan --firmware uefi --size-gb 476` shows the partitions for a drive of that size, without touching anything.
 
@@ -100,9 +101,13 @@ By default the window follows Windows' light or dark app mode, and switches when
 
 The screenshots are from WinPE, in a virtual machine with two virtual disks.
 
+## Updates
+
+When the app starts, it asks GitHub whether a newer version is out. If one is, a banner says so, with **Update now**: the app downloads the new `os-installer.exe` from this page's releases, checks it (size, SHA-256 and version), puts it in place of the old one and restarts. **Settings > Updates** has **Check for updates** and a switch for the check at startup. In WinPE without a network, the check at startup stays quiet.
+
 ## Privacy
 
-Everything happens on your PC. There is no telemetry and no account.
+Everything happens on your PC. There is no telemetry and no account. The only thing the app sends anywhere is the update check: a request to GitHub for the latest release of this repository (turn it off in Settings).
 
 ## Feedback
 
