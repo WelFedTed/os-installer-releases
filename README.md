@@ -33,7 +33,7 @@ Step 2 takes a Windows ISO as it is: OS Installer mounts it (read-only, only whi
 
 ## Injecting drivers
 
-After applying Windows, step 4 (or `inject-drivers` on the command line) adds the drivers in a folder, such as the storage and network drivers for a new PC, to that Windows. It uses DISM, which WinPE and Windows include. Choose the Windows it found on the other drives, type, browse to or drop the folder (subfolders are included), and optionally allow unsigned drivers.
+After applying Windows, step 4 (or `inject-drivers` on the command line) adds the drivers in a folder, such as the storage and network drivers for a new PC, to that Windows. It uses DISM, which WinPE and Windows include. Choose the Windows it found on the other drives, type, browse to or drop the folder (subfolders are included), and optionally allow unsigned drivers. Beside that option it shows how many drivers the folder holds and how many will be added: unsigned ones (no signature catalog next to the .inf) only when you allow them.
 
 ## Watching it work
 
