@@ -11,7 +11,7 @@ It is one small exe with a window and a command line, and it runs in full Window
 
 ![screenshot](docs/screenshot.png)
 
-> **Preview, and it erases disks.** All four steps work, in Windows and WinPE, and drives it prepared and made bootable start with UEFI and with BIOS in testing. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first, and please report how it goes on real PCs.
+> **It erases disks.** All four steps work, in Windows and WinPE, and drives it prepared and made bootable start with UEFI and with BIOS in testing. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first, and please report how it goes on real PCs.
 
 Before anything is erased, OS Installer shows what is on the drive and what it will get, and asks:
 
@@ -37,7 +37,7 @@ After applying Windows, step 4 (or `inject-drivers` on the command line) adds th
 
 ## Download
 
-Get **os-installer.exe** from the [releases page](https://github.com/WelFedTed/os-installer-releases/releases). It is a single file for 64-bit Windows 10, Windows 11 and WinPE, with nothing to install. Previews are marked *Pre-release*.
+Get **os-installer.exe** from the [releases page](https://github.com/WelFedTed/os-installer-releases/releases). It is a single file for 64-bit Windows 10, Windows 11 and WinPE, with nothing to install.
 
 - In Windows, double-click it.
 - In WinPE, copy it to your WinPE USB stick (or into the image) and run it from the command prompt, for example `D:\os-installer.exe`. The window fills the screen.
