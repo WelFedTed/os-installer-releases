@@ -5,7 +5,8 @@ A small Windows tool that installs Windows onto a drive the way deployment techn
 1. **Prepare the drive.** Pick a disk and how the PC will boot: UEFI (GPT) or BIOS / Legacy (MBR). OS Installer erases the disk and creates Microsoft's recommended partitions, with temporary drive letters.
 2. **Apply Windows.** Choose a Windows **ISO** (or its `install.wim` / `install.esd`) and an edition; OS Installer applies it to `W:\` with DISM. You can drop the ISO on the window. (WinNTSetup or your own DISM command work too.)
 3. **Make it bootable.** OS Installer copies the new Windows' boot files to the system partition with `bcdboot`, and sets up the recovery partition. The drive is meant for another PC, so it never adds a boot entry to the firmware of the PC it runs on.
-4. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot. You can drop the folder on the window.
+4. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot, including the drivers inside downloads such as HP SoftPaqs (`sp101370.exe`) and `.zip`, `.7z`, `.cab` or `.rar` files. You can drop the folder, or a download, on the window.
+5. **Eject drives.** OS Installer detaches the Windows ISO it mounted and removes the drive letters of the drive it prepared, so it can be unplugged and put in its PC.
 
 It is one small exe with a window and a command line, and it runs in full Windows and in **WinPE**, including a plain WinPE with no optional components added.
 
@@ -34,6 +35,8 @@ Step 2 takes a Windows ISO as it is: OS Installer mounts it (read-only, only whi
 ## Injecting drivers
 
 After applying Windows, step 4 (or `inject-drivers` on the command line) adds the drivers in a folder, such as the storage and network drivers for a new PC, to that Windows. It uses DISM, which WinPE and Windows include. Choose the Windows it found on the other drives, type, browse to or drop the folder (subfolders are included), and optionally allow unsigned drivers. Beside that option it shows how many drivers the folder holds and how many will be added: unsigned ones (no signature catalog next to the .inf) only when you allow them.
+
+Driver downloads don't need unpacking first. OS Installer looks inside programs and archives in the folder (an HP SoftPaq is a program with a CAB archive inside; many other makers' downloads carry a ZIP or 7z) and reads them itself, **without running them**. It unpacks the ones with drivers onto the new Windows' drive, adds the drivers, and deletes the unpacked files. Downloads that are installers of another kind (Inno Setup ones, for example) can't be read this way: unpack those with their own tool first. `list-drivers --drivers <folder>` on the command line shows what would be added.
 
 ## Watching it work
 
@@ -90,6 +93,7 @@ os-installer --help
 - `make-bootable` copies that Windows' boot files to its drive's system partition with `bcdboot` (UEFI for a GPT drive, BIOS for an MBR one) and sets up the recovery partition with its `Winre.wim` and `reagentc`. It leaves the boot menu of the PC it runs on alone. It works after a restart too, when the partitions have lost their letters. Needs an administrator command prompt.
 - `list-windows` lists the Windows installations on other drives; `inject-drivers` adds every `.inf` in the folder and its subfolders to one of them (`--force-unsigned` adds unsigned drivers too). Needs an administrator command prompt.
 - `check-update` says whether a newer version is out; `update` downloads it and replaces the exe.
+- `eject --disk N` removes a drive's letters so it can be unplugged.
 - Add `--verbose` to any command to also see what diskpart, DISM, bcdboot and reagentc print.
 - `env` says whether it is running in Windows or WinPE, whether it is running as administrator, and how the PC booted (UEFI or BIOS).
 - `plan --firmware uefi --size-gb 476` shows the partitions for a drive of that size, without touching anything.
