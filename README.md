@@ -132,4 +132,10 @@ Found a bug or have an idea? [Open an issue](https://github.com/WelFedTed/os-ins
 
 ---
 
+<a href="https://slint.dev"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/MadeWithSlint-logo-light.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/MadeWithSlint-logo-dark.png">
+  <img alt="#MadeWithSlint" src="docs/MadeWithSlint-logo-whitebg.png" width="160">
+</picture></a>
+
 OS Installer is free to download and use. It is not open source; the source code is not published. It is built with [Slint](https://slint.dev), and carries the Cascadia Mono font (SIL Open Font License). Copyright © 2026 WelFedTed. All rights reserved.
