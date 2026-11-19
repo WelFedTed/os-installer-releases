@@ -7,7 +7,7 @@ A small Windows tool that installs Windows onto a drive the way deployment techn
 3. **Make it bootable.** OS Installer copies the new Windows' boot files to the system partition with `bcdboot`, and sets up the recovery partition. The drive is meant for another PC, so it never adds a boot entry to the firmware of the PC it runs on.
 4. **Apply unattended answer file** (optional). OS Installer copies your `unattend.xml` into the new Windows, where Windows Setup reads it when the PC first starts, and applies its offlineServicing settings with DISM. It tells you if the file is for another architecture than the Windows.
 5. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot, including the drivers inside downloads such as HP SoftPaqs (`sp101370.exe`) and `.zip`, `.7z`, `.cab` or `.rar` files. You can drop the folder, or a download, on the window.
-6. **Eject drives.** OS Installer detaches the Windows ISO it mounted and removes the drive letters of the drive it prepared, so it can be unplugged and put in its PC.
+6. **Eject drives.** OS Installer detaches the Windows ISO it mounted and removes the drive letters of the drive it prepared, so it can be unplugged and put in its PC. The drive stays readable, so you can still inject drivers into it without replugging.
 
 Steps 3 to 5 also work on a drive that already has Windows on it, such as one from another PC, even when its Windows partition has no drive letter: the app gives it a temporary one while it works. Steps that need administrator rights say so in red, with a link that restarts the app as administrator.
 
@@ -39,7 +39,7 @@ Media with more than one architecture, such as a Media Creation Tool ISO or USB 
 
 ## Injecting drivers
 
-After applying Windows, step 4 (or `inject-drivers` on the command line) adds the drivers in a folder, such as the storage and network drivers for a new PC, to that Windows. It uses DISM, which WinPE and Windows include. Choose the Windows it found on the other drives, type, browse to or drop the folder (subfolders are included), and optionally allow unsigned drivers. Beside that option it shows how many drivers the folder holds and how many will be added: unsigned ones (no signature catalog next to the .inf) only when you allow them.
+After applying Windows, step 5 (or `inject-drivers` on the command line) adds the drivers in a folder, such as the storage and network drivers for a new PC, to that Windows. It uses DISM, which WinPE and Windows include. Choose the Windows it found on the other drives, type, browse to or drop the folder (subfolders are included), and optionally allow unsigned drivers. Beside that option it shows how many drivers the folder holds and how many will be added: unsigned ones (no catalog with a valid signature next to the .inf; Windows' own drivers count as signed) only when you allow them.
 
 Driver downloads don't need unpacking first. OS Installer looks inside programs and archives in the folder (an HP SoftPaq is a program with a CAB archive inside; many other makers' downloads carry a ZIP or 7z) and reads them itself, **without running them**. It unpacks the ones with drivers onto the new Windows' drive, adds the drivers, and deletes the unpacked files. Downloads that are installers of another kind (Inno Setup ones, for example) can't be read this way: unpack those with their own tool first. `list-drivers --drivers <folder>` on the command line shows what would be added.
 
