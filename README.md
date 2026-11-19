@@ -9,6 +9,8 @@ A small Windows tool that installs Windows onto a drive the way deployment techn
 5. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot, including the drivers inside downloads such as HP SoftPaqs (`sp101370.exe`) and `.zip`, `.7z`, `.cab` or `.rar` files. You can drop the folder, or a download, on the window.
 6. **Eject drives.** OS Installer detaches the Windows ISO it mounted and removes the drive letters of the drive it prepared, so it can be unplugged and put in its PC.
 
+Steps 3 to 5 also work on a drive that already has Windows on it, such as one from another PC, even when its Windows partition has no drive letter: the app gives it a temporary one while it works. Steps that need administrator rights say so in red, with a link that restarts the app as administrator.
+
 It is one small exe with a window and a command line, and it runs in full Windows and in **WinPE**, including a plain WinPE with no optional components added.
 
 ![screenshot](docs/screenshot.png)
