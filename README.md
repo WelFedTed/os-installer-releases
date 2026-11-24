@@ -6,7 +6,7 @@ A small Windows tool that installs Windows onto a drive the way deployment techn
 2. **Apply Windows.** Choose a Windows **ISO** (or its `install.wim` / `install.esd`) and an edition; OS Installer applies it to `W:\` with DISM. You can drop the ISO on the window. (WinNTSetup or your own DISM command work too.)
 3. **Make it bootable.** OS Installer copies the new Windows' boot files to the system partition with `bcdboot`, and sets up the recovery partition. The drive is meant for another PC, so it never adds a boot entry to the firmware of the PC it runs on.
 4. **Apply unattended answer file** (optional). OS Installer copies your `unattend.xml` into the new Windows, where Windows Setup reads it when the PC first starts, and applies its offlineServicing settings with DISM. It tells you if the file is for another architecture than the Windows.
-5. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot, including the drivers inside downloads such as HP SoftPaqs (`sp101370.exe`) and `.zip`, `.7z`, `.cab` or `.rar` files. You can drop the folder, or a download, on the window.
+5. **Inject drivers** (optional). OS Installer adds every driver (`.inf`) in a folder and its subfolders to the new Windows with DISM, so it has them from its first boot, including the drivers inside downloads such as HP SoftPaqs (`sp101370.exe`), Lenovo's installers, `.msi` packages and `.zip`, `.7z`, `.cab` or `.rar` files. You can drop the folder, or a download, on the window.
 6. **Eject drives.** OS Installer detaches the Windows ISO it mounted and removes the drive letters of the drive it prepared, so it can be unplugged and put in its PC. The drive stays readable, so you can still inject drivers into it without replugging.
 
 The steps sit in one column with an *Include* checkbox beside each: **Apply all** runs the included ones one after another (prepare, apply, make bootable, …) with one click. It first points out anything missing, then shows what each step will do and what will be erased, and warns if the steps don't all use the same drive.
@@ -17,7 +17,7 @@ It is one small exe with a window and a command line, and it runs in full Window
 
 ![screenshot](docs/screenshot.png)
 
-> **It erases disks.** All four steps work, in Windows and WinPE, and drives it prepared and made bootable start with UEFI and with BIOS in testing. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first, and please report how it goes on real PCs.
+> **It erases disks.** All the steps work, in Windows and WinPE, and drives it prepared and made bootable start with UEFI and with BIOS in testing. Preparing a drive deletes everything on it, so try it on a spare drive or in a virtual machine first, and please report how it goes on real PCs.
 
 Before anything is erased, OS Installer shows what is on the drive and what it will get, and asks:
 
@@ -25,7 +25,11 @@ Before anything is erased, OS Installer shows what is on the drive and what it w
 
 It will not prepare the drive Windows is running from, the drive OS Installer itself is on, write-protected drives, Storage Spaces drives or, in WinPE, the drive with WinPE or Windows Setup on it (usually the USB stick you started from). Preparing needs administrator rights.
 
-![the four steps, with Inject drivers](docs/drivers.png)
+![the steps, each with its Include checkbox, and Apply all](docs/drivers.png)
+
+Apply all says what it will do, and what it will erase, before it starts:
+
+![Apply all's summary](docs/apply-all.png)
 
 ## USB drives
 
